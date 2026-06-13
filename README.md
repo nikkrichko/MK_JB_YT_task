@@ -3,7 +3,15 @@
 
 Goal of this repository is to provide results of tasks - running performance tests on YouTrack system using JMeter, analyzing the results, and generating visual plots and tables for better understanding of the system's performance under different load scenarios.
 
-Goals, requirements, methodology and approach for performance testing is described in the report. [REPORT](https://docs.google.com/document/d/16-L1Zk5R_DaznVoAo4jKk57-VrrkSo2KibZP6ogbjK4/edit?usp=sharing) located in google docs contains the detailed analysis of the performance testing results, including the interpretation of the generated plots and tables, and conclusions about the system's performance under different load scenarios.
+Goals, requirements, methodology and approach for performance testing is described in the report. **[REPORT](https://docs.google.com/document/d/16-L1Zk5R_DaznVoAo4jKk57-VrrkSo2KibZP6ogbjK4/edit?usp=sharing)** located in google docs contains the detailed analysis of the performance testing results, including the interpretation of the generated plots and tables, and conclusions about the system's performance under different load scenarios.
+
+# Workflow for performance testing and analysis:
+
+1. Deploy YouTrack system using the provided shell scripts in the `Script` folder
+2. Run JMeter tests using the provided test plans in the `jmeter_scenarios` folder. Follow additional instruction to scripts in [jmeter_scenarios/readme](jmeter_scenarios/readme.md) 
+3. Analyze the generated .jtl files using the provided R scripts in the `Src` folder to generate visual plots and tables for better understanding of the system's performance under different load scenarios
+4. Generate JMeter HTML reports for each test results using the provided commands in the `README.md` file
+
 
 ### Used tools and technologies:`
 - [JMeter v5.6.3](https://jmeter.apache.org/) - an open-source tool for performance testing and load testing of web applications, used to simulate different load scenarios on the YouTrack system and generate performance test results in .jtl format. used scenarios are located in `jmeter_scenarios` folder
@@ -26,33 +34,4 @@ Goals, requirements, methodology and approach for performance testing is describ
 - `Script` - [Script](Script/readme.md) contains the shell scripts for YouTrack container deployment and system initialization
 - `Src` -  [Src](Src/readme.md) contains the R scripts for processing, analyzing, and visualizing JMeter performance test results
 
-# Workflow for performance testing and analysis:
-1. Deploy YouTrack system using the provided shell scripts in the `Script` folder
-2. Run JMeter tests using the provided test plans in the `jmeter_scenarios` folder
-3. Analyze the generated .jtl files using the provided R scripts in the `Src` folder to generate visual plots and tables for better understanding of the system's performance under different load scenarios
-4. Generate JMeter HTML reports for each test results using the provided commands in the `README.md` file
 
-
-#### Generating JMeter HTML Reports
-
-This generated reports are more as supportive visualization for the analysis of the performance testing results, they are not the main source of information for the analysis, but they can provide additional insights into the system's performance under different load scenarios.
-```cmd
-"C:\apache-jmeter-5.6.3\apache-jmeter-5.6.3\bin\jmeter.bat" -g "H:\GitHub\MK_JB_YT_task\jmeter_results\scenario_40_default.jtl" -o "H:\GitHub\MK_JB_YT_task\jmeter_reports\jmeter_html_reports\scenario_40_default_report"
-```
-
-```cmd
-"C:\apache-jmeter-5.6.3\apache-jmeter-5.6.3\bin\jmeter.bat" -g "H:\GitHub\MK_JB_YT_task\jmeter_results\scenario_80.jtl" -o "H:\GitHub\MK_JB_YT_task\jmeter_reports\jmeter_html_reports\scenario_80_report"
-```
-
-```cmd
-"C:\apache-jmeter-5.6.3\apache-jmeter-5.6.3\bin\jmeter.bat" -g "H:\GitHub\MK_JB_YT_task\jmeter_results\scenario_120.jtl" -o "H:\GitHub\MK_JB_YT_task\jmeter_reports\jmeter_html_reports\scenario_120_report"
-```
-
-```cmd
-"C:\apache-jmeter-5.6.3\apache-jmeter-5.6.3\bin\jmeter.bat" -g "H:\GitHub\MK_JB_YT_task\jmeter_results\scenario_200.jtl" -o "H:\GitHub\MK_JB_YT_task\jmeter_reports\jmeter_html_reports\scenario_200_report"
-```
-
-
-```cmd
-"C:\apache-jmeter-5.6.3\apache-jmeter-5.6.3\bin\jmeter.bat" -g "H:\GitHub\MK_JB_YT_task\jmeter_results\scenario_step.jtl" -o "H:\GitHub\MK_JB_YT_task\jmeter_reports\jmeter_html_reports\scenario_step_report"
-```

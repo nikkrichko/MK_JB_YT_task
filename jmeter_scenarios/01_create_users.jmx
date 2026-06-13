@@ -6,6 +6,8 @@
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
         <collectionProp name="Arguments.arguments"/>
       </elementProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
     </TestPlan>
     <hashTree>
       <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
@@ -150,7 +152,7 @@
           <boolProp name="ForeachController.useSeparator">true</boolProp>
         </ForeachController>
         <hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP POST Create token" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP POST Create token">
             <stringProp name="HTTPSampler.path">/hub/api/rest/users/${current_user_id}/permanenttokens/</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -184,89 +186,74 @@
               </collectionProp>
             </HeaderManager>
             <hashTree/>
-            <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
+            <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor">
               <stringProp name="cacheKey">true</stringProp>
               <stringProp name="filename"></stringProp>
               <stringProp name="parameters"></stringProp>
-              <stringProp name="script">// 1. Получаем индекс
+              <stringProp name="script">
 def idxFR = vars.get(&quot;__jm__Loop_Through_Users__idx&quot;)
-if (idxFR == null) idxFR = &quot;0&quot; // Безопасный дефолт
+if (idxFR == null) idxFR = &quot;0&quot; 
 
-// 2. Вытаскиваем данные
 def login = vars.get(&quot;u_login_&quot; + idxFR)
 def name = vars.get(&quot;u_name_&quot; + idxFR)
 def user_id = vars.get(&quot;u_id_&quot; + idxFR)
 
-// 3. Сохраняем переменные
 vars.put(&quot;current_user_login&quot;, login ?: &quot;unknown_login&quot;)
 vars.put(&quot;current_user_name&quot;, name ?: &quot;unknown_name&quot;)
 vars.put(&quot;current_user_id&quot;, user_id ?: &quot;unknown_id&quot;)
 
-// 4. Генерируем имя токена
 def randomNum = Math.abs(new Random().nextInt(100000))
 def tokenName = &quot;${login}_${randomNum}&quot;
 vars.put(&quot;generated_token_name&quot;, tokenName)
 
 
 
-// --- ИСПРАВЛЕННАЯ ЛОГИКА ПРОПУСКА ---
 def userId = vars.get(&quot;current_user_id&quot;)
 
-// Пропускаем, если:
-// 1. Имя содержит &apos;guest&apos; или &apos;null&apos;
-// 2. ID отсутствует или равен &apos;unknown_id&apos;
 if (tokenName.contains(&quot;null&quot;) || tokenName.contains(&quot;guest&quot;) || userId == null || userId == &quot;unknown_id&quot;) {
-    log.info(&quot;Пропускаем запрос для пользователя: &quot; + tokenName + &quot; (ID: &quot; + userId + &quot;)&quot;)
+    log.info(&quot;Skip for user &quot; + tokenName + &quot; (ID: &quot; + userId + &quot;)&quot;)
     prev.setIgnore()
 }</stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
             </JSR223PreProcessor>
             <hashTree/>
-            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor" enabled="true">
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor">
               <stringProp name="JSONPostProcessor.referenceNames">generated_token</stringProp>
               <stringProp name="JSONPostProcessor.jsonPathExprs">$.token</stringProp>
               <stringProp name="JSONPostProcessor.match_numbers">1</stringProp>
             </JSONPostProcessor>
             <hashTree/>
-            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor" enabled="true">
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor">
               <stringProp name="cacheKey">true</stringProp>
               <stringProp name="filename"></stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="script">import org.apache.jmeter.samplers.SampleResult
 
-// 1. Проверяем, что запрос прошел успешно (HTTP 200)
 if (prev.getResponseCode() == &quot;200&quot;) {
     
-    // 2. Достаем данные из переменных JMeter
     def token = vars.get(&quot;generated_token&quot;)
     def id = vars.get(&quot;current_user_id&quot;)
     def login = vars.get(&quot;current_user_login&quot;)
     def name = vars.get(&quot;current_user_name&quot;)
 
-    // 3. Проверяем, что токен не пустой и не null
     if (token != null &amp;&amp; token != &quot;null&quot; &amp;&amp; token.length() &gt; 0) {
         
-        // 4. Формируем строку CSV
         def csvLine = &quot;\&quot;${name}\&quot;,\&quot;${login}\&quot;,\&quot;${id}\&quot;,\&quot;${token}\&quot;\n&quot;
         
-        // 5. Запись в файл (путь укажите свой)
         def csvPath = &quot;h:/users_and_tokens.csv&quot;
         def file = new File(csvPath)
         
-        // Если файл новый, добавляем заголовок
         if (!file.exists()) {
             file.write(&quot;name,login,id,token\n&quot;, &quot;UTF-8&quot;)
         }
         
-        // Добавляем строку
         file.append(csvLine, &quot;UTF-8&quot;)
         
-        log.info(&quot;Токен для ${login} успешно записан в файл.&quot;)
-    } else {
-        log.warn(&quot;Запрос 200, но токен пуст для пользователя ${login}&quot;)
+        log.info(&quot;token for ${login} saved to file.&quot;)
+    } else {&quot;response 200 but token is empty for user ${login}&quot;)
     }
 } else {
-    log.error(&quot;Не удалось создать токен для ${vars.get(&apos;current_user_login&apos;)}, код ответа: &quot; + prev.getResponseCode())
+    log.error(&quot;failed to create token for user ${vars.get(&apos;current_user_login&apos;)}, response code: &quot; + prev.getResponseCode())
 }</stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
             </JSR223PostProcessor>
