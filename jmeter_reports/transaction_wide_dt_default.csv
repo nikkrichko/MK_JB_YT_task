@@ -1,8 +1,0 @@
-label,scenario_40,scenario_80,scenario_120,scenario_200
-Transaction - ADD comment,119,121,118,122
-Transaction - CHANGE issue type,64,70,59,75
-Transaction - CHANGE priority,68,70,66,70
-Transaction - CHANGE status,66,84,69,78
-Transaction - CREATE issue,257,385,186,234
-Transaction - READ issue,1073,1212,1306,1385
-Transaction - SEARCH issue,516,519,446,534

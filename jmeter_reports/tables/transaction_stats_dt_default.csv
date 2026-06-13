@@ -1,0 +1,29 @@
+label,scenario_name,p50,p90,p95,p99,mean,median,min,max
+Transaction - SEARCH issue,scenario_40,299,516,684,1244,361,299,50,1988
+Transaction - CREATE issue,scenario_40,136,257,357,584,178,136,10,641
+Transaction - READ issue,scenario_40,649,1073,1252,1565,753,649,508,2135
+Transaction - ADD comment,scenario_40,57,119,165,482,81,57,6,905
+Transaction - CHANGE status,scenario_40,42,66,74,373,51,42,10,740
+Transaction - CHANGE issue type,scenario_40,42,64,80,652,59,42,11,928
+Transaction - CHANGE priority,scenario_40,41,68,101,507,58,41,10,1014
+Transaction - CREATE issue,scenario_80,161,385,388,388,183,161,6,388
+Transaction - SEARCH issue,scenario_80,301,519,801,1273,367,301,201,1621
+Transaction - READ issue,scenario_80,709,1212,1369,1645,806,709,491,2087
+Transaction - ADD comment,scenario_80,59,121,168,584,84,59,6,1079
+Transaction - CHANGE status,scenario_80,43,84,133,387,56,43,13,662
+Transaction - CHANGE priority,scenario_80,44,70,176,675,68,44,13,768
+Transaction - CHANGE issue type,scenario_80,46,70,84,243,55,46,15,688
+Transaction - SEARCH issue,scenario_120,291,446,634,1214,344,291,211,2038
+Transaction - CREATE issue,scenario_120,140,186,754,949,201,140,92,953
+Transaction - READ issue,scenario_120,706,1306,1464,2008,857,706,486,9095
+Transaction - ADD comment,scenario_120,53,118,157,581,76,53,6,930
+Transaction - CHANGE issue type,scenario_120,42,59,73,108,46,42,18,402
+Transaction - CHANGE status,scenario_120,39,69,99,523,57,39,15,687
+Transaction - CHANGE priority,scenario_120,42,66,89,743,64,42,11,976
+Transaction - SEARCH issue,scenario_200,302,534,902,1210,376,302,209,2384
+Transaction - CREATE issue,scenario_200,149,234,279,1016,185,149,5,1300
+Transaction - READ issue,scenario_200,765,1385,1565,2122,912,765,466,3986
+Transaction - ADD comment,scenario_200,55,122,156,711,80,55,4,1187
+Transaction - CHANGE issue type,scenario_200,45,75,252,637,72,45,18,662
+Transaction - CHANGE status,scenario_200,42,78,180,789,67,42,18,880
+Transaction - CHANGE priority,scenario_200,43,70,282,679,74,43,11,1482

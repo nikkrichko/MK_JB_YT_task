@@ -1,0 +1,13 @@
+api_name,scenario_name,p50,p90,p95,p99,mean,median,min,max
+GET sortedIssues,scenario_40,30,165,223,791,72,30,0,1650
+POST issuesGetter,scenario_40,13,227,260,452,86,13,0,1595
+GET id_fields,scenario_40,7,31,40,114,18,7,4,964
+GET sortedIssues,scenario_80,29,138,207,628,66,29,4,1378
+POST issuesGetter,scenario_80,13,228,257,623,90,13,3,1499
+GET id_fields,scenario_80,7,34,40,125,17,7,3,757
+GET sortedIssues,scenario_120,29,128,185,524,60,29,4,1059
+POST issuesGetter,scenario_120,13,221,237,441,86,13,2,1911
+GET id_fields,scenario_120,7,31,37,144,17,7,3,858
+GET sortedIssues,scenario_200,30,147,186,312,58,30,4,1100
+POST issuesGetter,scenario_200,13,229,257,716,93,13,2,2303
+GET id_fields,scenario_200,7,32,38,238,19,7,3,877
