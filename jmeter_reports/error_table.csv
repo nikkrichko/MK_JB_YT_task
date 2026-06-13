@@ -1,0 +1,7 @@
+response_code,scenario_40,scenario_80,scenario_120,scenario_200,scenario_step
+200,38628,46152,48917,52996,120772
+304,321,368,395,410,232
+307,2141,2589,2751,2973,6966
+400,1,2,,3,2
+404,11,,,,
+Non HTTP response code: java.net.URISyntaxException,2,,,,

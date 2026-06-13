@@ -73,7 +73,8 @@ add_load_group <- function(input_dt){
 add_rps_and_group <- function(input_dt){
   require(data.table)
   input_dt <- as.data.table(input_dt)
-  input_dt[,":="("rps"=.N),by=dateTime]
+  # input_dt[,":="("rps"=.N),by=dateTime]
+  input_dt[,":="("rps"=.N),by=.(ts_sec = as.POSIXct(trunc(dateTime, "secs"), tz = "UTC"))]
   input_dt[,":="("load_rps_group"=cut(rps, breaks = c(1,seq(10,10001,10)), include.lowest = TRUE)),]
   input_dt[rps == 1,load_rps_group :="1"]
   input_dt
@@ -176,4 +177,78 @@ get_aggregate_table <- function(input_dt, personal_gpoup_with_load_gpoup=FALSE){
   result_dt <- left_join(temp_dt_2,temp_dt_1) %>% as.data.table()
   setorder(temp_dt_2, request_name)
   result_dt
+}
+
+
+save_ggplot <- function(plot_to_save,file_path_name=NULL, category_folder=""){
+  if(!is.null(file_path_name)){
+    fileName_to_save <- paste(file_path_name,".png",sep="")
+    ggsave(fileName_to_save,plot_to_save,width = 16, height = 9, dpi = 350, units = "in", device='png')
+    print(paste("plot successfully saved:",fileName_to_save))
+  } else {
+    plot_name <- deparse(substitute(plot_to_save))
+
+    if(category_folder != ""){
+      folder_to_save <- paste0(getwd(),"/",category_folder,sep="")
+      if(!dir.exists(folder_to_save)){
+        dir.create(folder_to_save)
+      }
+      fileName_to_save <- paste0(folder_to_save,"/",plot_name,".png",sep="")
+    } else {
+      fileName_to_save <- paste0(getwd(),"/",plot_name,".png",sep="")
+    }
+
+    ggsave(fileName_to_save, plot_to_save, width = 16, height = 9, dpi = 350, units = "in", device='png')
+    print(paste("plot successfully saved:",fileName_to_save))
+  }
+}
+
+add_logo <- function(input_gg_plot, logo_path){
+  require(magick)
+  require(cowplot)
+  logo_img <- image_read(logo_path)
+  input_gg_plot <- ggdraw() +
+    draw_plot(input_gg_plot,x = 0, y = 0, width = 1, height = 1)+
+    draw_image(logo_img,x = 0.85, y = 0.9, width = 0.1, height = 0.1)
+  input_gg_plot
+}
+
+melt_function <- function(dt, measure_vars, variable_name, value_name) {
+  # validate measure vars exist
+  missing_cols <- setdiff(measure_vars, names(dt))
+  if (length(missing_cols) > 0L) {
+    stop("Missing measure.vars in input data.table: ", paste(missing_cols, collapse = ", "))
+  }
+
+  cols <- c("model_id", "max_concurrency", measure_vars)
+  dt_copy <- dt[, ..cols]           # correct column selection using a character vector
+  data.table::melt(
+    dt_copy,
+    id.vars = c("model_id", "max_concurrency"),
+    measure.vars = measure_vars,
+    variable.name = variable_name,
+    value.name = value_name
+  )
+}
+
+
+joined_melted_ttft_itl_tpot_dt <- function(dt){
+  ttft_f_dt <- melt_function(dt, c("mean_ttft_ms", "median_ttft_ms", "p99_ttft_ms"), "stat", "value")
+  ttft_f_dt[,measure:="ttft"]
+  itl_f_dt <- melt_function(dt, c("mean_itl_ms", "median_itl_ms", "p99_itl_ms"), "stat", "value")
+  itl_f_dt[,measure:="itl"]
+  tpot_f_dt <- melt_function(dt, c("mean_tpot_ms", "median_tpot_ms", "p99_tpot_ms"), "stat", "value")
+  tpot_f_dt[,measure:="tpot"]
+  result_dt <- rbindlist(list(ttft_f_dt, itl_f_dt, tpot_f_dt))
+  result_dt
+}
+
+dynamic_breaks_10 <- function(x) {
+  rng <- range(x, na.rm = TRUE)
+  span <- diff(rng)
+  if (!is.finite(span) || span == 0) return(rng[1])
+
+  raw_step <- span / 10
+  step <- signif(raw_step, 1)  # nice rounded step (1, 2, 5, 10, ...)
+  seq(floor(rng[1] / step) * step, ceiling(rng[2] / step) * step, by = step)
 }
